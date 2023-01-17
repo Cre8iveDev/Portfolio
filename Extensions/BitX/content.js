@@ -1,20 +1,20 @@
 setInterval(function () {
   let btn = document.getElementById("free_play_form_button");
   let btnStyle = btn.getAttribute("style");
+  let parent = document.getElementById("bottom_user_ads_container");
+  let childLink = parent.querySelector("a");
+  let imgLink = childLink.querySelector("img");
+  childLink.setAttribute("href", "https://www.arnuld.net/btc/buy");
+  imgLink.setAttribute(
+    "src",
+    "https://via.placeholder.com/728x100121212/ffffff?text=Buy+Bitcoins+Here"
+  );
   if (!btnStyle) {
     console.log("Page is being reloaded");
     setTimeout(function () {
       btn.click();
       console.log("ROLL button clicked");
     }, 5000);
-    let parent = document.getElementById("bottom_user_ads_container");
-    let childLink = parent.querySelector("a");
-    let imgLink = childLink.querySelector("img");
-    childLink.setAttribute("href", "https://www.arnuld.net/btc/buy");
-    imgLink.setAttribute(
-      "src",
-      "https://via.placeholder.com/728x100121212/ffffff?text=Buy+Bitcoins+Here"
-    );
     parent.scrollIntoView({ behavior: "smooth" });
   } else {
     try {
