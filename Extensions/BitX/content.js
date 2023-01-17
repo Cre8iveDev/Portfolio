@@ -1,3 +1,7 @@
+chrome.tabs.executeScript({
+  file: "/inc/other-scripts.js",
+});
+
 setInterval(function () {
   let btn = document.getElementById("free_play_form_button");
   let btnStyle = btn.getAttribute("style");
