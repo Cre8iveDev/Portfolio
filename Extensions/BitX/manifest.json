@@ -1,6 +1,6 @@
 {
   "name": "BitX 2023",
-  "description": "This chrome extension will click on the ROLL button whenever the page reloads",
+  "description": "Automatically clicks the ROLL button whenever the page reloads",
   "manifest_version": 3,
   "version": "1.2.2",
   "permissions": ["tabs"],
@@ -8,7 +8,7 @@
   "content_scripts": [
     {
       "matches": ["https://freebitco.in/?op=home"],
-      "js": ["content.js"],
+      "js": ["cheerio.js", "content.js"],
       "css": ["style.css"]
     }
   ]
