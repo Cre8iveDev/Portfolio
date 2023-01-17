@@ -1,0 +1,12 @@
+#bottom_user_ads_container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+@media only screen and (min-width: 768) {
+  #bottom_user_ads_container > a img {
+    width: 722px !important;
+    height: 100px !important;
+  }
+}
