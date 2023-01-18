@@ -1,29 +1,29 @@
-chrome.tabs.executeScript({
-  file: "/inc/other-scripts.js",
-});
-
+let banner_ad_inserted = 0;
 setInterval(function () {
+  if (banner_ad_inserted === 1) {
+    let parent = document.getElementById("free_play_result");
+    let newDiv = document.createElement("div");
+    newDiv.setAttribute("id", "bitx");
+    let anchor = document.createElement("a");
+    anchor.setAttribute("href", "https://www.arnuld.net/btc/buy");
+    newDiv.appendChild(anchor);
+    let banner = document.createElement("img");
+    banner.setAttribute(
+      "src",
+      "https://www.paypalobjects.com/digitalassets/c/website/marketing/na/us/logo-center/Security_Banner_234x60_4a.png"
+    );
+    anchor.appendChild(banner);
+    parent.insertAdjacentHTML("afterend", newDiv.outerHTML);
+  }
+
   let btn = document.getElementById("free_play_form_button");
   let btnStyle = btn.getAttribute("style");
-  let parent = document.getElementById("free_play_result");
-  let newDiv = document.createElement("div");
-  newDiv.setAttribute("id", "bitx");
-  let anchor = document.createElement("a");
-  anchor.setAttribute("href", "https://www.arnuld.net/btc/buy");
-  newDiv.appendChild(anchor);
-  let banner = document.createElement("img");
-  banner.setAttribute(
-    "src",
-    "https://www.paypalobjects.com/digitalassets/c/website/marketing/na/us/logo-center/Security_Banner_234x60_4a.png"
-  );
-  anchor.appendChild(banner);
-
-  parent.insertAdjacentHTML("afterend", newDiv.outerHTML);
 
   if (!btnStyle) {
     console.log("Page is being reloaded");
     setTimeout(function () {
       btn.click();
+      banner_ad_inserted++;
       console.log("ROLL button clicked");
     }, 5000);
     parent.scrollIntoView({ behavior: "smooth" });
