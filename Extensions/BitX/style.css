@@ -1,7 +1,7 @@
-#bottom_user_ads_container {
+#bitx {
   display: flex;
   justify-content: center;
-  margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 @media only screen and (min-width: 768) {

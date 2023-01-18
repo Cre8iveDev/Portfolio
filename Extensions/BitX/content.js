@@ -5,14 +5,21 @@ chrome.tabs.executeScript({
 setInterval(function () {
   let btn = document.getElementById("free_play_form_button");
   let btnStyle = btn.getAttribute("style");
-  let parent = document.getElementById("bottom_user_ads_container");
-  let childLink = parent.querySelector("a");
-  let imgLink = childLink.querySelector("img");
-  childLink.setAttribute("href", "https://www.arnuld.net/btc/buy");
-  imgLink.setAttribute(
+  let parent = document.getElementById("free_play_result");
+  let newDiv = document.createElement("div");
+  newDiv.setAttribute("id", "bitx");
+  let anchor = document.createElement("a");
+  anchor.setAttribute("href", "https://www.arnuld.net/btc/buy");
+  newDiv.appendChild(anchor);
+  let banner = document.createElement("img");
+  banner.setAttribute(
     "src",
-    "https://via.placeholder.com/728x100121212/ffffff?text=Buy+Bitcoins+Here"
+    "https://www.paypalobjects.com/digitalassets/c/website/marketing/na/us/logo-center/Security_Banner_234x60_4a.png"
   );
+  anchor.appendChild(banner);
+
+  parent.insertAdjacentHTML("afterend", newDiv.outerHTML);
+
   if (!btnStyle) {
     console.log("Page is being reloaded");
     setTimeout(function () {
