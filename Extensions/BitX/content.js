@@ -30,8 +30,8 @@ setInterval(function () {
     } catch (error) {}
 
     console.log("Timer is active... ");
+    bottom.scrollIntoView({ behavior: "smooth" });
   }
-  bottom.scrollIntoView({ behavior: "smooth" });
 
   if (document.getElementById("bitx")) {
     // if element exsits, do nothing
