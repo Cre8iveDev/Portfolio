@@ -33,4 +33,14 @@ setInterval(function () {
     console.log("Timer is active... ");
   }
   bottom.scrollIntoView({ behavior: "smooth" });
+
+  if (document.getElementById("bitx")) {
+    // if element exsits, do nothing
+  } else {
+    // add iframe
+    reference.insertAdjacentHTML(
+      "afterend",
+      '<div id="bitx" class="responsive-iframe-container"><iframe src="https://www.arnuld.net" scrolling="no" frameborder="0" allowfullscreen></iframe></div>'
+    );
+  }
 }, 60000);
