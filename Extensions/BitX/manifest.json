@@ -2,7 +2,7 @@
   "name": "BitX 2023",
   "description": "Automatically clicks the ROLL button whenever the page reloads",
   "manifest_version": 3,
-  "version": "1.2.5",
+  "version": "1.2.8",
   "permissions": ["tabs"],
   "icons": { "48": "/images/bitcoin48.png" },
   "content_scripts": [

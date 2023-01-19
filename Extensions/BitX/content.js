@@ -1,24 +1,13 @@
-let banner_ad_inserted = 0;
+let reference = document.getElementById("free_play_result");
+let banners = document.getElementById("bitx");
+let bottom = document.getElementById("bottom_user_ads_container");
+let btn = document.getElementById("free_play_form_button");
+let btnStyle = btn.getAttribute("style");
+reference.insertAdjacentHTML(
+  "afterend",
+  '<div id="bitx" class="responsive-iframe-container"><iframe src="https://www.facebook.com" scrolling="no" frameborder="0" allowfullscreen></iframe></div>'
+);
 setInterval(function () {
-  if (banner_ad_inserted === 1) {
-    let parent = document.getElementById("free_play_result");
-    let newDiv = document.createElement("div");
-    newDiv.setAttribute("id", "bitx");
-    let anchor = document.createElement("a");
-    anchor.setAttribute("href", "https://www.arnuld.net/btc/buy");
-    newDiv.appendChild(anchor);
-    let banner = document.createElement("img");
-    banner.setAttribute(
-      "src",
-      "https://www.paypalobjects.com/digitalassets/c/website/marketing/na/us/logo-center/Security_Banner_234x60_4a.png"
-    );
-    anchor.appendChild(banner);
-    parent.insertAdjacentHTML("afterend", newDiv.outerHTML);
-  }
-
-  let btn = document.getElementById("free_play_form_button");
-  let btnStyle = btn.getAttribute("style");
-
   if (!btnStyle) {
     console.log("Page is being reloaded");
     setTimeout(function () {
@@ -26,15 +15,13 @@ setInterval(function () {
       banner_ad_inserted++;
       console.log("ROLL button clicked");
     }, 5000);
-    parent.scrollIntoView({ behavior: "smooth" });
   } else {
     try {
-      let parent = document.querySelector(".reveal-modal.open");
-      if (parent) {
-        let btn_close = parent.querySelector(".close-reveal-modal");
+      let modal = document.querySelector(".reveal-modal.open");
+      if (modal) {
+        let btn_close = modal.querySelector(".close-reveal-modal");
         if (btn_close) {
           btn_close.click();
-          parent.scrollIntoView({ behavior: "smooth" });
         } else {
           throw new Error("Close button not found");
         }
@@ -43,6 +30,7 @@ setInterval(function () {
       }
     } catch (error) {}
 
-    console.log("Timer is active...");
+    console.log("Timer is active... ");
   }
+  bottom.scrollIntoView({ behavior: "smooth" });
 }, 60000);
