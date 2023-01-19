@@ -15,7 +15,7 @@
 
 @media only screen and (min-width: 768px) {
   .responsive-iframe-container {
-    max-width: 768px;
+    max-width: 728px;
     height: 100px;
   }
 }
