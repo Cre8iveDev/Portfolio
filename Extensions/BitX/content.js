@@ -12,7 +12,6 @@ setInterval(function () {
     console.log("Page is being reloaded");
     setTimeout(function () {
       btn.click();
-      banner_ad_inserted++;
       console.log("ROLL button clicked");
     }, 5000);
   } else {
