@@ -19,3 +19,10 @@
     height: 100px;
   }
 }
+
+@media only screen and (max-width: 767px) {
+  .responsive-iframe-container {
+    width: 100%;
+    min-height: 100px;
+  }
+}

@@ -5,7 +5,7 @@ let btn = document.getElementById("free_play_form_button");
 let btnStyle = btn.getAttribute("style");
 reference.insertAdjacentHTML(
   "afterend",
-  '<div id="bitx" class="responsive-iframe-container"><iframe src="https://www.facebook.com" scrolling="no" frameborder="0" allowfullscreen></iframe></div>'
+  '<div id="bitx" class="responsive-iframe-container"><iframe src="https://www.arnuld.net" scrolling="no" frameborder="0" allowfullscreen></iframe></div>'
 );
 setInterval(function () {
   if (!btnStyle) {
