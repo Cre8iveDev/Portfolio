@@ -22,8 +22,17 @@
   text-align: center;
 }
 
+input#free_play_form_button {
+  margin-top: 25px;
+}
+
 #wait {
   padding-top: 30px;
+}
+
+#bitx2 {
+  color: #000000;
+  margin-bottom: 40px;
 }
 
 @media only screen and (min-width: 768px) {
