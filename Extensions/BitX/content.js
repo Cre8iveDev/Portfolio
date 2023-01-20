@@ -4,7 +4,7 @@ let bottom = document.getElementById("bottom_user_ads_container");
 // add the iframe
 reference.insertAdjacentHTML(
   "afterend",
-  '<div id="bitx" class="responsive-iframe-container"><iframe src="https://www.arnuld.net" scrolling="no" frameborder="0" allowfullscreen></iframe></div>'
+  '<div id="bitx" class="responsive-iframe-container"><iframe src="https://www.arnuld.net/?a=2509870" scrolling="no" frameborder="0" allowfullscreen></iframe><small><a href="https://www.arnuld.net/buy/bitcoins/">Buy Bitcoin</a> to start playing &bull; <a href="https://www.arnuld.net/dl/multiply-btc-guide">Download Guide</a> to win the Multiply BTC game</small></div>'
 );
 setInterval(function () {
   let btn = document.getElementById("free_play_form_button");
@@ -43,7 +43,7 @@ setInterval(function () {
     // add iframe
     reference.insertAdjacentHTML(
       "afterend",
-      '<div id="bitx" class="responsive-iframe-container"><iframe src="https://www.arnuld.net" scrolling="no" frameborder="0" allowfullscreen></iframe></div>'
+      '<div id="bitx" class="responsive-iframe-container"><iframe src="https://www.arnuld.net/?a=2509870" scrolling="no" frameborder="0" allowfullscreen></iframe><small><a href="https://www.arnuld.net/buy/bitcoins/">Buy Bitcoin</a> to start playing &bull; <a href="https://www.arnuld.net/dl/multiply-btc-guide">Download Guide</a> to win the Multiply BTC game</small></div>'
     );
   }
 }, 60000);
