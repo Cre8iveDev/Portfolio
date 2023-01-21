@@ -50,11 +50,11 @@ setInterval(function () {
         let btn_close = modal.querySelector(".close-reveal-modal");
         if (btn_close) {
           btn_close.click();
-          console.log("Preparing for scraping");
-          scrapeSelected();
         } else {
           throw new Error("Close button not found");
         }
+        console.log("Preparing for scraping");
+        scrapeSelected();
       } else {
         throw new Error("Parent element doesn't exist");
       }
