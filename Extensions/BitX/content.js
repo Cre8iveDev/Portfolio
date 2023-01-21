@@ -1,3 +1,12 @@
+// authenticate
+// get date today
+const date = new Date();
+const dateStart = date.toISOString().slice(0, 10);
+
+// show settings modal
+// save settings to localstorage & cookie
+
+// show before loop starts
 let starting_balance = document.querySelector("#balance").innerHTML;
 let free_rolls = 0;
 let reference = document.getElementById("free_play_result");
@@ -29,16 +38,20 @@ setInterval(function () {
       btn.click();
       free_rolls++;
       console.log("ROLL button clicked");
+      // get the date when ROLL button was clicked
+      const dateToday = date.toISOString().slice(0, 10);
     }, 3000);
   } else {
     // close the modal after free roll
     try {
-      let modal = document.querySelector(".reveal-modal.open");
-      if (modal) {
+      // let modal = document.querySelector(".reveal-modal.open");
+      let modal = document.getElementById("myModal22");
+      if (modal.style.display === "block") {
         let btn_close = modal.querySelector(".close-reveal-modal");
         if (btn_close) {
-          scrapeSelected();
           btn_close.click();
+          console.log("Preparing for scraping");
+          scrapeSelected();
         } else {
           throw new Error("Close button not found");
         }
@@ -72,14 +85,23 @@ function scrapeSelected() {
   let eligible_bonus = document.querySelector(
     "#bonus_eligible_msg > span > .dep_bonus_max"
   ).innerHTML;
-  let rp_promo = document.querySelector(
+  let rp_promo_text = document.querySelector(
     "#free_play_alert_boxes > div ~ div"
   ).innerHTML;
+  if (
+    rp_promo_text.includes("rp_promo_") ||
+    rp_promo_text.indexOf("rp_promo_") !== -1
+  ) {
+    let rp_promo = document.querySelector(
+      "#free_play_alert_boxes > div ~ div"
+    ).innerHTML;
+  }
   let multiply_btc_winnings = document.querySelector(
     "#personal_stats > div > div > div h4"
   ).innerHTML;
 
   let jsonData = {
+    "start-date": dateStart,
     "btc-usd-price": btc_usd_price,
     "starting-balance": starting_balance,
     "balance-li": balance_li,
