@@ -38,23 +38,19 @@ setInterval(function () {
       btn.click();
       free_rolls++;
       console.log("ROLL button clicked");
-      // get the date when ROLL button was clicked
-      const dateToday = date.toISOString().slice(0, 10);
     }, 3000);
   } else {
     // close the modal after free roll
     try {
-      // let modal = document.querySelector(".reveal-modal.open");
-      let modal = document.getElementById("myModal22");
-      if (modal.style.display === "block") {
+      let modal = document.querySelector(".reveal-modal.open");
+      if (modal) {
         let btn_close = modal.querySelector(".close-reveal-modal");
         if (btn_close) {
+          scrapeSelected();
           btn_close.click();
         } else {
           throw new Error("Close button not found");
         }
-        console.log("Preparing for scraping");
-        scrapeSelected();
       } else {
         throw new Error("Parent element doesn't exist");
       }
@@ -88,14 +84,9 @@ function scrapeSelected() {
   let rp_promo_text = document.querySelector(
     "#free_play_alert_boxes > div ~ div"
   ).innerHTML;
-  if (
-    rp_promo_text.includes("rp_promo_") ||
-    rp_promo_text.indexOf("rp_promo_") !== -1
-  ) {
-    let rp_promo = document.querySelector(
-      "#free_play_alert_boxes > div ~ div"
-    ).innerHTML;
-  }
+  let rp_promo = document.querySelector(
+    "#free_play_alert_boxes > div ~ div"
+  ).innerHTML;
   let multiply_btc_winnings = document.querySelector(
     "#personal_stats > div > div > div h4"
   ).innerHTML;
