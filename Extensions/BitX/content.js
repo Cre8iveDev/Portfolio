@@ -1,17 +1,34 @@
-// authenticate
+/*******************
+ * authentication
+ *******************/
+
 /***************
  * Initialize
  ***************/
+let startingBalance = 0;
 let freeRolls = 0;
 let isFirstLaunch = false;
+let r =
+  '<div id="bitx" class="responsive-iframe-container"><iframe src="https://www.arnuld.net/?a=2509870" scrolling="no" frameborder="0" allowfullscreen></iframe><small><a href="https://www.arnuld.net/buy/bitcoins/">Buy Bitcoin</a> to start playing &bull; <a href="https://www.arnuld.net/dl/multiply-btc-guide">Download Guide</a> to win the Multiply BTC game</small></div>';
 let jsonData = {};
+let settings = {};
+
+/************************
+ * Get the settings from
+ * Local Storage
+ ************************/
+if (localStorage.getItem("settings") !== undefined) {
+  let settings = JSON.parse(localStorage.getItem("settings"));
+  // console.log(settings);
+}
 
 /****************************
  * Check Local Storage date
  * if same as date today
  ****************************/
 // 1. get stored date in local storage
-let storedDate = localStorage.getItem("dateToday");
+jsonData = JSON.parse(localStorage.getItem("bitxData")); // get json data from Local Storage
+storedDate = jsonData["date-today"]; // get today's date from json data
 
 // 2. get date today
 const date = new Date();
@@ -25,13 +42,12 @@ if (dateToday !== storedDate) {
   isFirstLaunch = false;
 }
 
-// show settings modal
-// save settings to localstorage & cookie
-
 /************************
  * Rebuild the banners
  ************************/
-let startingBalance = document.querySelector("#balance").innerHTML;
+if (isFirstLaunch) {
+  startingBalance = document.querySelector("#balance").innerHTML;
+}
 let reference = document.getElementById("free_play_result");
 let reference2 = document.getElementById(
   "double_your_btc_main_container_outer"
@@ -41,15 +57,9 @@ let bottom = document.getElementById("bottom_user_ads_container");
 let bottom2 = document.getElementById("double_your_btc_main_container");
 
 // add the iframe
-reference.insertAdjacentHTML(
-  "afterend",
-  '<div id="bitx" class="responsive-iframe-container"><iframe src="https://www.arnuld.net/?a=2509870" scrolling="no" frameborder="0" allowfullscreen></iframe><small><a href="https://www.arnuld.net/buy/bitcoins/">Buy Bitcoin</a> to start playing &bull; <a href="https://www.arnuld.net/dl/multiply-btc-guide">Download Guide</a> to win the Multiply BTC game</small></div>'
-);
+reference.insertAdjacentHTML("afterend", r);
 // add iframe to multiply btc page
-reference2.insertAdjacentHTML(
-  "afterend",
-  '<div id="bitx2" class="responsive-iframe-container"><iframe src="https://www.arnuld.net/?a=2509870" scrolling="no" frameborder="0" allowfullscreen></iframe><small><a href="https://www.arnuld.net/buy/bitcoins/">Buy Bitcoin</a> to start playing &bull; <a href="https://www.arnuld.net/dl/multiply-btc-guide">Download Guide</a> to win the Multiply BTC game</small></div>'
-);
+reference2.insertAdjacentHTML("afterend", r);
 
 /******************************
  * 60-Second loop starts here
@@ -63,10 +73,13 @@ function main() {
       console.log("Page is being reloaded");
       setTimeout(function () {
         btn.click();
+        jsonData = JSON.parse(localStorage.getItem("bitxData")); // get json data from Local Storage
+        freeRolls = jsonData["free-rolls"];
         freeRolls++;
         console.log("ROLL button clicked");
         scrapeSelected(); // returns jsonData
         saveJSONData(jsonData); // save to Local Storage
+        console.log(jsonData); // remove this
       }, 3000);
     } else {
       // close the modal after free roll
@@ -94,10 +107,7 @@ function main() {
       // if element exist, do nothing
     } else {
       // add iframe
-      reference.insertAdjacentHTML(
-        "afterend",
-        '<div id="bitx" class="responsive-iframe-container"><iframe src="https://www.arnuld.net/?a=2509870" scrolling="no" frameborder="0" allowfullscreen></iframe><small><a href="https://www.arnuld.net/buy/bitcoins/">Buy Bitcoin</a> to start playing &bull; <a href="https://www.arnuld.net/dl/multiply-btc-guide">Download Guide</a> to win the Multiply BTC game</small></div>'
-      );
+      reference.insertAdjacentHTML("afterend", r);
     }
   }, 30000);
 }
@@ -117,6 +127,9 @@ function scrapeSelected() {
   let multiplyBTCWinnings = document.querySelector(
     "#personal_stats > div > div > div h4"
   ).innerHTML;
+  if (startingBalance === 0 || startingBalance === null) {
+    startingBalance = currentBalance;
+  }
 
   jsonData = {
     "date-today": dateToday,
@@ -134,12 +147,7 @@ function scrapeSelected() {
 
 function saveJSONData(jsonData) {
   localStorage.setItem("bitxData", JSON.stringify(jsonData));
-  console.log("Saved to Local Storage as bitxData");
-}
-
-function getJSONData() {
-  jsonData = JSON.parse(localStorage.getItem("bitxData"));
-  console.log(jsonData);
+  console.log("bitxData saved successfully!");
 }
 
 main();

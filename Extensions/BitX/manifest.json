@@ -3,6 +3,10 @@
   "description": "Automatically clicks the ROLL button whenever the page reloads",
   "manifest_version": 3,
   "version": "1.3.2",
+  "action": {
+    "default_title": "Change BitX settings",
+    "default_popup": "/assets/settings.html"
+  },
   "permissions": ["tabs"],
   "icons": { "48": "/images/bitcoin48.png" },
   "content_scripts": [

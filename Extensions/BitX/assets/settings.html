@@ -1,1 +1,112 @@
-Hello, from the popup
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      html {
+        background-color: #222222;
+        color: #ffffff;
+      }
+      body {
+        margin: 0;
+      }
+      p {
+        margin-top: 0;
+      }
+      .modal-heading {
+        background-color: #000000;
+        padding: 5px 10px;
+      }
+      .modal-body {
+        padding: 10px 15px 15px;
+      }
+      .modal-body label {
+        display: block;
+      }
+      .modal-body input:last-child {
+        margin-bottom: 10px;
+      }
+      .modal-body input {
+        border-radius: 3px;
+        border-style: none;
+        margin-bottom: 5px;
+        outline: unset;
+        padding: 8px 10px;
+        width: 92%;
+      }
+      .modal-body input:focus-visible {
+      }
+      .modal-body p:last-child {
+        margin-bottom: 5px;
+      }
+      #settings {
+        display: flex;
+        flex-direction: column;
+        width: 250px;
+        height: auto;
+      }
+      .modal-body .action {
+        display: flex;
+        padding: 5px 0 0;
+        width: 101%;
+      }
+      .modal-body button {
+        border-radius: 5px;
+        border-width: 0;
+        cursor: pointer;
+        padding: 8px 10px;
+        width: 100%;
+      }
+      button[type="button"] {
+        background-color: #60a917;
+        color: #ffffff;
+        margin-left: 0;
+        transition: all 0.65s ease;
+      }
+      button:hover {
+        background-color: #7ad61e;
+      }
+      .modal-footer {
+        display: none;
+        height: 30px;
+      }
+      .modal-footer div {
+        display: none;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        width: 100%;
+      }
+      .show {
+        display: flex !important;
+      }
+      .success {
+        background-color: #60a917;
+      }
+      .error {
+        background-color: #a20025;
+      }
+    </style>
+    <script src="popup.js"></script>
+  </head>
+  <body>
+    <div id="settings">
+      <div class="modal-heading">BitX | Account Settings</div>
+      <div class="modal-body">
+        <form id="loginForm">
+          <label for="username">Username:</label>
+          <input type="text" id="username" name="username" />
+          <br />
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password" />
+          <div class="action">
+            <button type="button" id="okBtn" title="Save">Save</button>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div class="success">Settings saved successfully!</div>
+        <div class="error">Something went wrong... try again.</div>
+      </div>
+    </div>
+  </body>
+</html>
