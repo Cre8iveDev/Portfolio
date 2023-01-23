@@ -13,7 +13,10 @@
         margin-top: 0;
       }
       .modal-heading {
+        display: flex;
+        align-items: center;
         background-color: #000000;
+        color: #ffffff;
         padding: 5px 10px;
       }
       .modal-body {
@@ -34,6 +37,7 @@
         width: 92%;
       }
       .modal-body input:focus-visible {
+        outline: unset;
       }
       .modal-body p:last-child {
         margin-bottom: 5px;
@@ -90,7 +94,10 @@
   </head>
   <body>
     <div id="settings">
-      <div class="modal-heading">BitX | Account Settings</div>
+      <div class="modal-heading">
+        BitX &nbsp;<span style="font-size: 20px">&bull;</span>&nbsp; Account
+        Settings
+      </div>
       <div class="modal-body">
         <form id="loginForm">
           <label for="username">Username:</label>
