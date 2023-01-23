@@ -1,14 +1,32 @@
 // authenticate
-// get date today
+
+/****************************
+ * Check Local Storage date
+ * if same as date today
+ ****************************/
+// 1. get stored date in local storage
+let storedDate = localStorage.setItem("dateToday");
+
+// 2. get date today
 const date = new Date();
-const startDate = date.toISOString().slice(0, 10);
+const dateToday = date.toISOString().slice(0, 10);
+
+// 3. Compare dates
+if (dateToday !== storedDate) {
+  let isFirstLaunch = true,
+    freeRolls = 0;
+} else {
+  localStorage.setItem("dateToday");
+  let isFirstLaunch = false;
+}
+
+console.log("Date today: " + dateToday + ", isFirstLaunch: " + isFirstLaunch);
 
 // show settings modal
 // save settings to localstorage & cookie
 
 // show before loop starts
 let starting_balance = document.querySelector("#balance").innerHTML;
-let free_rolls = 0;
 let reference = document.getElementById("free_play_result");
 let reference2 = document.getElementById(
   "double_your_btc_main_container_outer"
@@ -109,45 +127,6 @@ function scrapeSelected() {
   };
 
   console.log(jsonData);
-}
-
-function saveToLocalStorage(jsonData) {
-  // remove existing local storage item if it exists
-  if (localStorage.getItem("freeRollData") !== null) {
-    localStorage.removeItem("freeRollData");
-    console.log("freeRollData was removed from Local Storage");
-  } else {
-    // add a new local storage with same key
-    localStorage.setItem("freeRollData", JSON.stringify(jsonData));
-    console.log("freeRollData saved to Local Storage");
-  }
-}
-
-function saveToCookie(jsonData) {
-  let expires = date.setDate(date.getDate() + 1);
-  let jsonString = JSON.stringify(jsonData);
-  document.cookie =
-    "freeRollData=" + jsonString + "; expires=" + expires + "; path=/";
-  console.log("freeRollData saved to Cookie");
-}
-
-function getLocalStorage() {
-  if (localStorage.getItem("freeRollData") !== null) {
-    let jsonData = localStorage.getItem("freeRollData");
-    console.log(jsonData);
-    console.log("freeRollData retrieved from Local Storage");
-  } else {
-    console.log("freeRollData in Local Storage does not exist!");
-  }
-}
-
-function getCookie() {
-  const freeRollCookie = new URLSearchParams(
-    document.cookie.replaceAll("&", "%26").replaceAll("; ", "&")
-  );
-  console.log(
-    "freeRollData in a Cookie: " + freeRollCookie.get("freeRollData")
-  );
 }
 
 main();
