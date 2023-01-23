@@ -1,11 +1,16 @@
 // authenticate
+/***************
+ * Initialize
+ ***************/
+let isFirstLaunch = false;
+let jsonData = {};
 
 /****************************
  * Check Local Storage date
  * if same as date today
  ****************************/
 // 1. get stored date in local storage
-let storedDate = localStorage.setItem("dateToday");
+let storedDate = localStorage.getItem("dateToday");
 
 // 2. get date today
 const date = new Date();
@@ -13,20 +18,18 @@ const dateToday = date.toISOString().slice(0, 10);
 
 // 3. Compare dates
 if (dateToday !== storedDate) {
-  let isFirstLaunch = true,
-    freeRolls = 0;
+  isFirstLaunch = true;
+  freeRolls = 0;
 } else {
-  localStorage.setItem("dateToday");
-  let isFirstLaunch = false;
+  localStorage.setItem("dateToday", dateToday);
+  isFirstLaunch = false;
 }
-
-console.log("Date today: " + dateToday + ", isFirstLaunch: " + isFirstLaunch);
 
 // show settings modal
 // save settings to localstorage & cookie
 
 // show before loop starts
-let starting_balance = document.querySelector("#balance").innerHTML;
+let startingBalance = document.querySelector("#balance").innerHTML;
 let reference = document.getElementById("free_play_result");
 let reference2 = document.getElementById(
   "double_your_btc_main_container_outer"
@@ -55,13 +58,10 @@ function main() {
       console.log("Page is being reloaded");
       setTimeout(function () {
         btn.click();
-        free_rolls++;
+        freeRolls++;
         console.log("ROLL button clicked");
         scrapeSelected();
-        saveToLocalStorage();
-        saveToCookie();
-        getLocalStorage();
-        getCookie();
+        saveJSONData(jsonData);
       }, 3000);
     } else {
       // close the modal after free roll
@@ -98,34 +98,44 @@ function main() {
 }
 
 function scrapeSelected() {
-  let btc_usd_price = document.querySelector(
+  let btcUSDPrice = document.querySelector(
     "#site_stats > div > div > div h4"
   ).innerHTML;
-  let balance_li = document.querySelector("span#balance").innerHTML;
-  let eligible_bonus = document.querySelector(
+  let currentBalance = document.querySelector("span#balance").innerHTML;
+  let eligibleBonus = document.querySelector(
     "#bonus_eligible_msg > span > .dep_bonus_max"
   ).innerHTML;
   let rp_promo_text = document.querySelector(
     "#free_play_alert_boxes > div ~ div"
   ).innerHTML;
-  let rp_promo = document.querySelector(
+  let rpPromo = document.querySelector(
     "#free_play_alert_boxes > div ~ div"
   ).innerHTML;
-  let multiply_btc_winnings = document.querySelector(
+  let multiplyBTCWinnings = document.querySelector(
     "#personal_stats > div > div > div h4"
   ).innerHTML;
 
-  let jsonData = {
-    "start-date": startDate,
-    "btc-usd-price": btc_usd_price,
-    "starting-balance": starting_balance,
-    "btc-balance": balance_li,
-    "eligible-bonus": eligible_bonus,
-    "multiply-btc-winnings": multiply_btc_winnings,
-    "rp-promo": rp_promo,
-    "free-rolls": free_rolls,
+  jsonData = {
+    "date-today": dateToday,
+    "btc-usd-price": btcUSDPrice,
+    "starting-balance": startingBalance,
+    "current-balance": currentBalance,
+    "eligible-bonus": eligibleBonus,
+    "multiply-btc-winnings": multiplyBTCWinnings,
+    "rp-promo": rpPromo,
+    "free-rolls": freeRolls,
   };
 
+  return jsonData;
+}
+
+function saveJSONData(jsonData) {
+  localStorage.setItem("bitxData", JSON.stringify(jsonData));
+  console.log("Saved to Local Storage as bitxData");
+}
+
+function getJSONData() {
+  jsonData = JSON.parse(localStorage.getItem("bitxData"));
   console.log(jsonData);
 }
 
