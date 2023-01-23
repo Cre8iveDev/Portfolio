@@ -1,14 +1,37 @@
 // authenticate
-// get date today
+/***************
+ * Initialize
+ ***************/
+let freeRolls = 0;
+let isFirstLaunch = false;
+let jsonData = {};
+
+/****************************
+ * Check Local Storage date
+ * if same as date today
+ ****************************/
+// 1. get stored date in local storage
+let storedDate = localStorage.getItem("dateToday");
+
+// 2. get date today
 const date = new Date();
 const dateToday = date.toISOString().slice(0, 10);
+
+// 3. Compare dates
+if (dateToday !== storedDate) {
+  isFirstLaunch = true;
+} else {
+  localStorage.setItem("dateToday", dateToday);
+  isFirstLaunch = false;
+}
 
 // show settings modal
 // save settings to localstorage & cookie
 
-// show before loop starts
+/************************
+ * Rebuild the banners
+ ************************/
 let startingBalance = document.querySelector("#balance").innerHTML;
-let freeRolls = 0;
 let reference = document.getElementById("free_play_result");
 let reference2 = document.getElementById(
   "double_your_btc_main_container_outer"
@@ -27,7 +50,10 @@ reference2.insertAdjacentHTML(
   "afterend",
   '<div id="bitx2" class="responsive-iframe-container"><iframe src="https://www.arnuld.net/?a=2509870" scrolling="no" frameborder="0" allowfullscreen></iframe><small><a href="https://www.arnuld.net/buy/bitcoins/">Buy Bitcoin</a> to start playing &bull; <a href="https://www.arnuld.net/dl/multiply-btc-guide">Download Guide</a> to win the Multiply BTC game</small></div>'
 );
-// 60-second loop starts here
+
+/******************************
+ * 60-Second loop starts here
+ ******************************/
 function main() {
   setInterval(function () {
     let btn = document.getElementById("free_play_form_button");
@@ -37,8 +63,10 @@ function main() {
       console.log("Page is being reloaded");
       setTimeout(function () {
         btn.click();
+        freeRolls++;
         console.log("ROLL button clicked");
-        scrapeSelected();
+        scrapeSelected(); // returns jsonData
+        saveJSONData(jsonData); // save to Local Storage
       }, 3000);
     } else {
       // close the modal after free roll
@@ -82,6 +110,7 @@ function scrapeSelected() {
   let eligibleBonus = document.querySelector(
     "#bonus_eligible_msg > span > .dep_bonus_max"
   ).innerHTML;
+  // let rpPromo = document.querySelector("#free_play_alert_boxes > div ~ div").innerHTML;
   let rpPromo = document.querySelector(
     "#free_play_alert_boxes > div ~ div"
   ).innerHTML;
@@ -89,7 +118,7 @@ function scrapeSelected() {
     "#personal_stats > div > div > div h4"
   ).innerHTML;
 
-  let jsonData = {
+  jsonData = {
     "date-today": dateToday,
     "btc-usd-price": btcUSDPrice,
     "starting-balance": startingBalance,
@@ -100,6 +129,16 @@ function scrapeSelected() {
     "free-rolls": freeRolls,
   };
 
+  return jsonData;
+}
+
+function saveJSONData(jsonData) {
+  localStorage.setItem("bitxData", JSON.stringify(jsonData));
+  console.log("Saved to Local Storage as bitxData");
+}
+
+function getJSONData() {
+  jsonData = JSON.parse(localStorage.getItem("bitxData"));
   console.log(jsonData);
 }
 
