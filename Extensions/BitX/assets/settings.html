@@ -15,9 +15,18 @@
       .modal-heading {
         display: flex;
         align-items: center;
+        justify-content: space-between;
         background-color: #000000;
         color: #ffffff;
         padding: 5px 10px;
+      }
+      .modal-heading .left {
+        display: flex;
+        align-items: center;
+      }
+      .modal-heading img {
+        background-color: #ffffff;
+        border-radius: 48px;
       }
       .modal-body {
         padding: 10px 15px 15px;
@@ -95,8 +104,13 @@
   <body>
     <div id="settings">
       <div class="modal-heading">
-        BitX &nbsp;<span style="font-size: 20px">&bull;</span>&nbsp; Account
-        Settings
+        <div class="left">
+          BitX &nbsp;<span style="font-size: 20px">&bull;</span>&nbsp; Account
+          Settings
+        </div>
+        <div class="right">
+          <img src="bitcoin48.png" width="40" height="40" />
+        </div>
       </div>
       <div class="modal-body">
         <form id="loginForm">
