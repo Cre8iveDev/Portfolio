@@ -6,66 +6,44 @@
  * #1 Get the settings
  * from Local Storage
  *************************/
-if (localStorage.getItem("settings") !== undefined) {
+if (localStorage.getItem("settings") !== null) {
   let settings = JSON.parse(localStorage.getItem("settings"));
   if (settings) {
     console.log("Settings retrieved from Local Storage");
   }
+} else {
+  console.log("Settings is not found");
 }
 
 /***************
  * Initialize
  ***************/
-let storedDate = "";
 let btcUSDPrice = "";
 let currentBalance = 0;
 let eligibleBonus = "";
+let isFirstLaunch = true;
 let rewardPoints = "";
 let rpPromo = "";
 let multiplyBTCWinnings = "";
 let freeRolls = 0;
-let rpPromoText = "";
-let start = "(RP) promotion ";
-let end = " (";
-let isFirstLaunch = false;
-let winnings = 0;
-let winnings_result = "";
-let winnings_start = "You win ";
-let winnings_end = " BTC";
+let promo_start = "";
+let promo_end = "";
 let r =
   '<div id="bitx" class="responsive-iframe-container"><iframe src="https://www.arnuld.net/?a=2509870" scrolling="no" frameborder="0" allowfullscreen></iframe><small><a href="https://www.arnuld.net/buy/bitcoins/">Buy Bitcoin</a> to start playing &bull; <a href="https://www.arnuld.net/dl/multiply-btc-guide">Download Guide</a> to win the Multiply BTC game</small></div>';
+let rpPromoBox = "";
+let rpFreeRoll = "";
+let rpPromoText = "";
+let startingBalance = 0;
+let storedBalance = 0;
+let storedDate = "";
+let temp = "";
+let winnings_result = "";
+let winnings = 0;
+let winnings_start = "";
+let winnings_end = "";
 let jsonData = {};
+let bitxData = {};
 let settings = {};
-
-/*************************
- * Get jsonData from
- * Local Storage & set
- * startingBalance = 0
- *************************/
-jsonData = JSON.parse(localStorage.getItem("bitxData")); // get json data from Local Storage
-if (!jsonData) {
-  let startingBalance = 0;
-} else {
-  storedDate = jsonData["date-today"]; // get today's date from json data
-}
-
-/****************************
- * Check Local Storage date
- * if same as date today
- ****************************/
-// 1. stored date in local storage was read above
-
-// 2. get date today
-const date = new Date();
-const dateToday = date.toISOString().slice(0, 10);
-
-// 3. Compare dates
-if (dateToday !== storedDate) {
-  isFirstLaunch = true;
-  freeRolls = 0;
-} else {
-  isFirstLaunch = false;
-}
 
 /************************
  * Rebuild the banners
@@ -83,10 +61,31 @@ reference.insertAdjacentHTML("afterend", r);
 // add iframe to multiply btc page
 reference2.insertAdjacentHTML("afterend", r);
 
+/*************************
+ * Get the jsonData
+ * from Local Storage
+ *************************/
+jsonData = JSON.parse(localStorage.getItem("bitxData")); // get json data from Local Storage
+
+// set startingBalance
+if (!jsonData) {
+  // startingBalance = jsonData["current-balance"];
+  initialScrape();
+} else {
+  // get current balance from local storage
+  storedBalance = Number(jsonData["current-balance"]);
+  storedBalance = storedBalance.toFixed(8);
+
+  // get date today
+  const date = new Date();
+  dateToday = date.toISOString().slice(0, 10);
+  storedDate = jsonData["date-today"]; // check if jsonData does not exist
+}
+
 /******************************
  * 60-Second loop starts here
  ******************************/
-function main() {
+function main(freeRolls) {
   setInterval(function () {
     let btn = document.getElementById("free_play_form_button");
     let btnStyle = btn.getAttribute("style");
@@ -96,29 +95,28 @@ function main() {
       setTimeout(function () {
         btn.click();
         console.log("ROLL button clicked");
-        if (!isFirstLaunch) {
-          freeRolls = jsonData["free-rolls"];
+        if (isFirstLaunch) {
+          isFirstLaunch = false;
         }
-        freeRolls++;
-        scrapeSelected(); // returns jsonData
+        freeRolls = Number(jsonData["free-rolls"]);
+        freeRolls += 1;
+        scrapeSelected(freeRolls); // returns jsonData
         saveJSONData(jsonData); // save to Local Storage
         console.log(jsonData); // remove later, for checking data only
       }, 3000);
     } else {
       // close the modal after free roll
-      try {
-        let modal = document.getElementById("myModal22");
-        if (modal) {
-          let btn_close = modal.querySelector(".close-reveal-modal");
-          if (btn_close) {
-            btn_close.click();
-          } else {
-            throw new Error("Close button not found");
-          }
+      let modal = document.getElementById("myModal22");
+      if (modal) {
+        let btn_close = modal.querySelector(".close-reveal-modal");
+        if (btn_close) {
+          btn_close.click();
         } else {
-          throw new Error("Parent element doesn't exist");
+          throw new Error("Close button not found");
         }
-      } catch (error) {}
+      } else {
+        throw new Error("Parent element doesn't exist");
+      }
 
       console.log("Timer is active... ");
       // scroll to bottom of the page
@@ -135,49 +133,76 @@ function main() {
   }, 15000);
 }
 
-function scrapeSelected() {
+function scrapeSelected(freeRolls) {
+  // jsonData = JSON.parse(localStorage.getItem("bitxData"));
   btcUSDPrice = document.querySelector(
     "#site_stats > div > div > div h4"
   ).innerText;
-  // let currentBalance = document.querySelector("span#balance").innerHTML;
-  // currentBalance = document.querySelector("ul.right.tabs > li.balanceli > span").innerHTML;
   if (isFirstLaunch) {
     startingBalance = currentBalance;
   } else {
     startingBalance = jsonData["starting-balance"];
-    currentBalance = Number(document.getElementById("balance_small").innerText);
+    do {
+      currentBalance = Number(
+        document.querySelector("ul.right.tabs > li.balanceli > span").innerHTML
+      );
+      if (currentBalance === null || currentBalance === 0) {
+        setTimeout(function () {
+          currentBalance = Number(
+            document.getElementById("balance_small").innerText
+          );
+        }, 2000); // 2 seconds
+      }
+    } while (currentBalance === null || currentBalance === 0);
   }
-  winnings_result = document.querySelector("#free_play_result").innerText;
-  if (winnings_result.includes("win")) {
-    winnings_start = "You win ";
-  }
-  winnings_end = " BTC";
-  winnings = winnings_result.split(winnings_start)[1].split(winnings_end)[0];
-  if (winnings === null || winnings === "") {
-    winnings = jsonData["free-btc"];
-  }
-  // ISSUE: for some reason, winnings cannot be scraped
-  currentBalance = currentBalance + Number(winnings);
-  // ISSUE: currentBalance is 1 roll behind
+  /* Calculate currentBalance */
+  winnings_result = document.getElementById("fp_min_reward").innerText;
+  const regex = /\d+.\d+/;
+  winnings = Number(winnings_result.match(regex)[0]); // exp format, ex: 1.8e-7
+  currentBalance = (currentBalance + winnings).toFixed(8);
+  // currentBalance = currentBalance.toFixed(8); // string + limits decimals to 8 chars
+  winnings = winnings.toFixed(8); // convert winnings back to string + limits decimals to 8 chars
   if (currentBalance === null) {
+    console.log("currentBalance = null");
     temp = document.querySelector("nav section ul li.balanceli").innerText;
-    console.log("Scraped balanceli: " + temp);
     currentBalance = temp.split("BTC")[0];
-    currentBalance = currentBalance.trim();
-    console.log("currentBalance: " + currentBalance);
+    currentBalance = Number(currentBalance.trim());
   }
+  /* Scrape more values */
   eligibleBonus = document.querySelector(
     "#bonus_eligible_msg > span > .dep_bonus_max"
   ).innerHTML;
   rewardPoints = document.querySelector(
     "#rewards_tab div:nth-child(2) div .user_reward_points"
   ).innerHTML;
-  // rpPromoBox = document.querySelector("#free_play_alert_boxes > div:nth-child(2) > span").innerHTML;
-  rpPromoText = document.querySelector(
-    "#free_play_alert_boxes > div:nth-child(2) > span"
-  ).innerText;
-  rpPromo = rpPromoText.match(/\d+x/)[0]; // 5x
-  rpPromoSchedule = rpPromoText.split(start)[1].split(end)[0];
+  // rpPromoText = document.querySelector("#free_play_alert_boxes > div:nth-child(2) > span").innerText;
+  rpPromoBox = document.querySelector(
+    "#free_play_alert_boxes > div:nth-child(2)"
+  );
+  if (rpPromoBox.style.display === "none") {
+    // returns true if rpPromoBox has the display style of 'none'
+    rpPromo = "No promo available";
+    rpPromoSchedule = "No schedule ATM";
+    hourlyRP = document.querySelector(
+      "#free_play_result div .rewards_link"
+    ).innerText;
+  } else {
+    // execute if rpPromoBox is visible
+    rpPromoText = document.querySelector(
+      "#free_play_alert_boxes > div:nth-child(2) > span"
+    ).innerText;
+    if (rpPromoText.includes(" ends ")) {
+      promo_start = "running and ";
+    } else {
+      promo_start = "(RP) promotion ";
+    }
+    promo_end = " (";
+    rpPromo = rpPromoText.match(/\d+x/)[0]; // output: 5x
+    rpPromoSchedule = rpPromoText.split(promo_start)[1].split(promo_end)[0];
+    promoRPText = document.getElementById("free_play_result").innerText;
+    const regex_rp = /s \((\d+)/;
+    hourlyRP = rpPromoText.match(regex_rp)[1] + " RP/free roll";
+  }
   multiplyBTCWinnings = document.querySelector(
     "#personal_stats > div > div > div h4"
   ).innerHTML;
@@ -192,6 +217,7 @@ function scrapeSelected() {
     "multiply-btc-winnings": multiplyBTCWinnings,
     "reward-points": rewardPoints,
     "rp-promo": rpPromo,
+    "rp-promo-hourly": hourlyRP,
     "rp-promo-schedule": rpPromoSchedule,
     "starting-balance": startingBalance,
   };
@@ -199,9 +225,9 @@ function scrapeSelected() {
   return jsonData;
 }
 
-main();
-
 function saveJSONData(jsonData) {
   localStorage.setItem("bitxData", JSON.stringify(jsonData));
   console.log("jsonData saved to Local Storage!");
 }
+
+main();
