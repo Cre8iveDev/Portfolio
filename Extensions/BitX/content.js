@@ -65,24 +65,26 @@ reference2.insertAdjacentHTML("afterend", r);
  * Get the jsonData
  * from Local Storage
  *************************/
+// get date today
+const date = new Date();
+dateToday = date.toISOString().slice(0, 10);
+
 jsonData = JSON.parse(localStorage.getItem("bitxData")); // get json data from Local Storage
 
 // set startingBalance
 if (jsonData) {
-  // get current balance from local storage
+  // get current balance from Local Storage
   storedBalance = Number(jsonData["current-balance"]);
   storedBalance = storedBalance.toFixed(8);
   startingBalance = document.querySelector(
     "ul.right.tabs > li.balanceli > span"
   ).innerHTML;
 
-  // get date today
-  const date = new Date();
-  dateToday = date.toISOString().slice(0, 10);
+  // get stored date from Local Storage
   storedDate = jsonData["date-today"]; // check if jsonData does not exist
 }
 // if storedDate is 1 day late than dateToday
-if (storedDate < dateToday) {
+if (storedDate !== dateToday) {
   startingBalance = document.querySelector(
     "ul.right.tabs > li.balanceli > span"
   ).innerHTML;
@@ -102,15 +104,12 @@ function main(freeRolls) {
         btn.click();
         console.log("ROLL button clicked");
         if (isFirstLaunch) {
-          console.log("isFirstLaunch = " + isFirstLaunch);
           freeRolls = 0;
         } else {
           freeRolls = jsonData["free-rolls"];
-          console.log("freeRolls from Local Storage: " + freeRolls);
         }
         // free roll has been claimed, set isFirstLaunch = false
         isFirstLaunch = false;
-        console.log("freeRolls from Local Storage: " + freeRolls);
         // fixing issue on first launch, where freeRolls = NaN
         if (Number.isNaN(freeRolls)) {
           freeRolls = Number(freeRolls);
