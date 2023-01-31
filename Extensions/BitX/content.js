@@ -21,7 +21,7 @@ if (localStorage.getItem("settings") !== null) {
 let btcUSDPrice = "";
 let currentBalance = 0;
 let eligibleBonus = "";
-let isFirstLaunch = true;
+let isFirstLaunch = false;
 let rewardPoints = "";
 let rpPromo = "";
 let multiplyBTCWinnings = "";
@@ -68,18 +68,24 @@ reference2.insertAdjacentHTML("afterend", r);
 jsonData = JSON.parse(localStorage.getItem("bitxData")); // get json data from Local Storage
 
 // set startingBalance
-if (!jsonData) {
-  // startingBalance = jsonData["current-balance"];
-  initialScrape();
-} else {
+if (jsonData) {
   // get current balance from local storage
   storedBalance = Number(jsonData["current-balance"]);
   storedBalance = storedBalance.toFixed(8);
+  startingBalance = document.querySelector(
+    "ul.right.tabs > li.balanceli > span"
+  ).innerHTML;
 
   // get date today
   const date = new Date();
   dateToday = date.toISOString().slice(0, 10);
   storedDate = jsonData["date-today"]; // check if jsonData does not exist
+}
+// if storedDate is 1 day late than dateToday
+if (storedDate < dateToday) {
+  startingBalance = document.querySelector(
+    "ul.right.tabs > li.balanceli > span"
+  ).innerHTML;
 }
 
 /******************************
@@ -96,10 +102,25 @@ function main(freeRolls) {
         btn.click();
         console.log("ROLL button clicked");
         if (isFirstLaunch) {
-          isFirstLaunch = false;
+          console.log("isFirstLaunch = " + isFirstLaunch);
+          freeRolls = 0;
+        } else {
+          freeRolls = jsonData["free-rolls"];
+          console.log("freeRolls from Local Storage: " + freeRolls);
         }
-        freeRolls = Number(jsonData["free-rolls"]);
-        freeRolls += 1;
+        // free roll has been claimed, set isFirstLaunch = false
+        isFirstLaunch = false;
+        console.log("freeRolls from Local Storage: " + freeRolls);
+        // fixing issue on first launch, where freeRolls = NaN
+        if (Number.isNaN(freeRolls)) {
+          freeRolls = Number(freeRolls);
+          console.log("freeRolls is NaN");
+        }
+        // compare dates
+        if (dateToday !== storedDate) {
+          const date = new Date();
+          dateToday = date.toISOString().slice(0, 10);
+        }
         scrapeSelected(freeRolls); // returns jsonData
         saveJSONData(jsonData); // save to Local Storage
         console.log(jsonData); // remove later, for checking data only
@@ -134,13 +155,15 @@ function main(freeRolls) {
 }
 
 function scrapeSelected(freeRolls) {
-  // jsonData = JSON.parse(localStorage.getItem("bitxData"));
+  freeRolls++;
   btcUSDPrice = document.querySelector(
     "#site_stats > div > div > div h4"
   ).innerText;
   if (isFirstLaunch) {
-    startingBalance = currentBalance;
+    isFirstLaunch = true;
+    startingBalance = storedBalance;
   } else {
+    isFirstLaunch = false;
     startingBalance = jsonData["starting-balance"];
     do {
       currentBalance = Number(
@@ -160,7 +183,6 @@ function scrapeSelected(freeRolls) {
   const regex = /\d+.\d+/;
   winnings = Number(winnings_result.match(regex)[0]); // exp format, ex: 1.8e-7
   currentBalance = (currentBalance + winnings).toFixed(8);
-  // currentBalance = currentBalance.toFixed(8); // string + limits decimals to 8 chars
   winnings = winnings.toFixed(8); // convert winnings back to string + limits decimals to 8 chars
   if (currentBalance === null) {
     console.log("currentBalance = null");
@@ -201,7 +223,7 @@ function scrapeSelected(freeRolls) {
     rpPromoSchedule = rpPromoText.split(promo_start)[1].split(promo_end)[0];
     promoRPText = document.getElementById("free_play_result").innerText;
     const regex_rp = /s \((\d+)/;
-    hourlyRP = rpPromoText.match(regex_rp)[1] + " RP/free roll";
+    hourlyRP = rpPromoText.match(regex_rp)[1] + " Reward Points";
   }
   multiplyBTCWinnings = document.querySelector(
     "#personal_stats > div > div > div h4"
@@ -227,7 +249,7 @@ function scrapeSelected(freeRolls) {
 
 function saveJSONData(jsonData) {
   localStorage.setItem("bitxData", JSON.stringify(jsonData));
-  console.log("jsonData saved to Local Storage!");
+  isFirstLaunch = false;
 }
 
 main();
