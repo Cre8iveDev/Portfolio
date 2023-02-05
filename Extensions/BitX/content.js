@@ -12,7 +12,7 @@ if (localStorage.getItem("settings") !== null) {
     console.log("Settings retrieved from Local Storage");
   }
 } else {
-  console.log("Settings is not found");
+  // console.log("Settings is not found");
 }
 
 /***************
@@ -41,6 +41,8 @@ let winnings_result = "";
 let winnings = 0;
 let winnings_start = "";
 let winnings_end = "";
+let activeBonusBox = document.getElementById("reward_points_bonuses_main_div");
+let activeBonus = "";
 let jsonData = {};
 let bitxData = {};
 let settings = {};
@@ -53,6 +55,8 @@ let reference2 = document.getElementById(
   "double_your_btc_main_container_outer"
 );
 let banners = document.getElementById("bitx");
+
+// set bottom reference
 let bottom = document.getElementById("bottom_user_ads_container");
 let bottom2 = document.getElementById("double_your_btc_main_container");
 
@@ -61,27 +65,30 @@ reference.insertAdjacentHTML("afterend", r);
 // add iframe to multiply btc page
 reference2.insertAdjacentHTML("afterend", r);
 
+// get date today
+const date = new Date();
+dateToday = (
+  date.getFullYear() +
+  "-" +
+  (date.getMonth() + 1) +
+  "-" +
+  date.getDate()
+).replace(/(^|\D)(\d)(?!\d)/g, "$10$2"); // .replace() adds leading zero to all single digits. output: 2023-02-01
+
 /*************************
  * Get the jsonData
  * from Local Storage
  *************************/
-// get date today
-const date = new Date();
-dateToday = date.toISOString().slice(0, 10);
-
 jsonData = JSON.parse(localStorage.getItem("bitxData")); // get json data from Local Storage
+storedDate = jsonData["date-today"];
 
-// set startingBalance
-if (jsonData) {
-  // get current balance from Local Storage
+if (dateToday !== storedDate) {
+  initialScrape();
+  jsonData = JSON.parse(localStorage.getItem("bitxData"));
+} else {
+  // get current balance from local storage
   storedBalance = Number(jsonData["current-balance"]);
   storedBalance = storedBalance.toFixed(8);
-  startingBalance = document.querySelector(
-    "ul.right.tabs > li.balanceli > span"
-  ).innerHTML;
-
-  // get stored date from Local Storage
-  storedDate = jsonData["date-today"]; // check if jsonData does not exist
 }
 // if storedDate is 1 day late than dateToday
 if (storedDate !== dateToday) {
@@ -94,54 +101,17 @@ if (storedDate !== dateToday) {
  * 60-Second loop starts here
  ******************************/
 function main(freeRolls) {
+  console.log("Page is reloading...");
+
   setInterval(function () {
-    let btn = document.getElementById("free_play_form_button");
-    let btnStyle = btn.getAttribute("style");
+    let btnStyle = document
+      .getElementById("free_play_form_button")
+      .getAttribute("style");
     // if 'style' attribute is not found, click the button
     if (!btnStyle) {
-      console.log("Page is being reloaded");
-      setTimeout(function () {
-        btn.click();
-        console.log("ROLL button clicked");
-        if (isFirstLaunch) {
-          freeRolls = 0;
-        } else {
-          freeRolls = jsonData["free-rolls"];
-        }
-        // free roll has been claimed, set isFirstLaunch = false
-        isFirstLaunch = false;
-        // fixing issue on first launch, where freeRolls = NaN
-        if (Number.isNaN(freeRolls)) {
-          freeRolls = Number(freeRolls);
-          console.log("freeRolls is NaN");
-        }
-        // compare dates
-        if (dateToday !== storedDate) {
-          const date = new Date();
-          dateToday = date.toISOString().slice(0, 10);
-        }
-        scrapeSelected(freeRolls); // returns jsonData
-        saveJSONData(jsonData); // save to Local Storage
-        console.log(jsonData); // remove later, for checking data only
-      }, 3000);
+      claimFreeRoll();
     } else {
-      // close the modal after free roll
-      let modal = document.getElementById("myModal22");
-      if (modal) {
-        let btn_close = modal.querySelector(".close-reveal-modal");
-        if (btn_close) {
-          btn_close.click();
-        } else {
-          throw new Error("Close button not found");
-        }
-      } else {
-        throw new Error("Parent element doesn't exist");
-      }
-
-      console.log("Timer is active... ");
-      // scroll to bottom of the page
-      bottom.scrollIntoView({ behavior: "smooth" });
-      bottom2.scrollIntoView({ behavior: "smooth" });
+      // console.log("Timer is active... ");
     }
 
     if (document.getElementById("bitx")) {
@@ -150,7 +120,47 @@ function main(freeRolls) {
       // add iframe
       reference.insertAdjacentHTML("afterend", r);
     }
-  }, 15000);
+
+    // scroll to bottom of the page
+    bottom.scrollIntoView({ behavior: "smooth" });
+    bottom2.scrollIntoView({ behavior: "smooth" });
+  }, 30000);
+}
+
+function claimFreeRoll() {
+  document.getElementById("free_play_form_button").click();
+  console.log("ROLL button clicked");
+  if (isFirstLaunch) {
+    isFirstLaunch = false;
+  }
+  freeRolls = Number(jsonData["free-rolls"]); // get freeRolls from local storage
+  freeRolls = freeRolls + 1;
+  scrapeSelected(freeRolls); // returns jsonData
+  saveJSONData(jsonData); // save to Local Storage
+
+  setTimeout(function () {
+    /*****************************
+     * 8-Second countdown.
+     * This makes sure the
+     * modal is already visible
+     *****************************/
+    console.log(jsonData); // remove later, for checking data only
+  }, 5000); // 8 seconds
+
+  /*******************
+   * Close the modal
+   *******************/
+  let modal = document.getElementById("myModal22");
+  if (modal) {
+    let btn_close = modal.querySelector(".close-reveal-modal");
+    if (btn_close) {
+      btn_close.click();
+    } else {
+      throw new Error("Close button not found");
+    }
+  } else {
+    throw new Error("Parent element doesn't exist");
+  }
 }
 
 function scrapeSelected(freeRolls) {
@@ -158,6 +168,13 @@ function scrapeSelected(freeRolls) {
   btcUSDPrice = document.querySelector(
     "#site_stats > div > div > div h4"
   ).innerText;
+  // let activeBonusStyle = document.getElementById("bonus_container_fp_bonus").getAttribute("style");
+  if (activeBonusBox.hasChildNodes()) {
+    activeBonus =
+      "Ends in: " + document.getElementById("bonus_span_fp_bonus").innerText;
+  } else {
+    activeBonus = "No active bonus";
+  }
   if (isFirstLaunch) {
     isFirstLaunch = true;
     startingBalance = storedBalance;
@@ -193,6 +210,7 @@ function scrapeSelected(freeRolls) {
   eligibleBonus = document.querySelector(
     "#bonus_eligible_msg > span > .dep_bonus_max"
   ).innerHTML;
+
   rewardPoints = document.querySelector(
     "#rewards_tab div:nth-child(2) div .user_reward_points"
   ).innerHTML;
@@ -229,6 +247,7 @@ function scrapeSelected(freeRolls) {
   ).innerHTML;
 
   jsonData = {
+    "active-bonus": activeBonus,
     "date-today": dateToday,
     "btc-usd-price": btcUSDPrice,
     "current-balance": currentBalance,
@@ -249,6 +268,21 @@ function scrapeSelected(freeRolls) {
 function saveJSONData(jsonData) {
   localStorage.setItem("bitxData", JSON.stringify(jsonData));
   isFirstLaunch = false;
+}
+
+function initialScrape() {
+  // change all starting values
+  startingBalance = document.getElementById("balance_small").innerText;
+  // save data back to local storage
+
+  jsonData = {
+    "date-today": dateToday,
+    "free-rolls": freeRolls,
+    "starting-balance": startingBalance,
+  };
+
+  saveJSONData(jsonData);
+  console.log(JSON.parse(localStorage.getItem("bitxData"))); // remove later, just for checking
 }
 
 main();

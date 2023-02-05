@@ -26,10 +26,6 @@ input#free_play_form_button {
   margin-top: 25px;
 }
 
-#wait {
-  padding-top: 30px;
-}
-
 #bitx2 {
   color: #000000;
   margin-bottom: 40px;
@@ -37,8 +33,9 @@ input#free_play_form_button {
 
 @media only screen and (min-width: 768px) {
   .responsive-iframe-container {
-    max-width: 728px;
     height: 100px;
+    margin-bottom: 40px;
+    max-width: 728px;
   }
 }
 
