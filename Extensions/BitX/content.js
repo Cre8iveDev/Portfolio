@@ -22,20 +22,23 @@ let btcUSDPrice = "";
 let currentBalance = 0;
 let eligibleBonus = "";
 let isFirstLaunch = false;
-let rewardPoints = "";
-let rpPromo = "";
+let loop = 0;
 let multiplyBTCWinnings = "";
 let freeRolls = 0;
 let promo_start = "";
 let promo_end = "";
 let r =
   '<div id="bitx" class="responsive-iframe-container"><iframe src="https://www.arnuld.net/?a=2509870" scrolling="no" frameborder="0" allowfullscreen></iframe><small><a href="https://www.arnuld.net/buy/bitcoins/">Buy Bitcoin</a> to start playing &bull; <a href="https://www.arnuld.net/dl/multiply-btc-guide">Download Guide</a> to win the Multiply BTC game</small></div>';
+let randomMinutes = "";
+let rewardPoints = "";
+let rpPromo = "";
 let rpPromoBox = "";
 let rpFreeRoll = "";
 let rpPromoText = "";
 let startingBalance = 0;
 let storedBalance = 0;
 let storedDate = "";
+let systemMinutes = "";
 let temp = "";
 let winnings_result = "";
 let winnings = 0;
@@ -111,20 +114,17 @@ function main(freeRolls) {
     if (!btnStyle) {
       claimFreeRoll();
     } else {
-      // console.log("Timer is active... ");
+      console.log("Waiting for next roll... ");
     }
 
-    if (document.getElementById("bitx")) {
-      // if element exist, do nothing
-    } else {
-      // add iframe
+    if (!document.getElementById("bitx")) {
       reference.insertAdjacentHTML("afterend", r);
     }
 
     // scroll to bottom of the page
     bottom.scrollIntoView({ behavior: "smooth" });
     bottom2.scrollIntoView({ behavior: "smooth" });
-  }, 30000);
+  }, 15000);
 }
 
 function claimFreeRoll() {
@@ -164,7 +164,7 @@ function claimFreeRoll() {
 }
 
 function scrapeSelected(freeRolls) {
-  freeRolls++;
+  // freeRolls++;
   btcUSDPrice = document.querySelector(
     "#site_stats > div > div > div h4"
   ).innerText;
